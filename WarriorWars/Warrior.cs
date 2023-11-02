@@ -5,10 +5,10 @@ namespace WarriorWars
 {
 	class Warrior
 	{
-		private const int ALLIANCE_STARTING_HEALTH = 100; // fields; camelCase
-		private const int HORDE_STARTING_HEALTH = 100;
+		private const int ALLIANCE_STARTING_HEALTH = 20; // fields; camelCase
+		private const int HORDE_STARTING_HEALTH = 20;
 
-		private Faction faction; // enum field
+		private readonly Faction FACTION; // enum field
 
 		private int health; // more fields
 		private string name;
@@ -28,7 +28,7 @@ namespace WarriorWars
 		public Warrior(string name, Faction faction)
 		{
 			this.name = name;
-			this.faction = faction;
+			FACTION = faction;
 			isAlive = true;
 
 			switch (faction)
@@ -46,6 +46,35 @@ namespace WarriorWars
 				default:
 					break;
 			}
+		}
+
+		public void Attack(Warrior enemyWarrior)
+		{
+			int damage = weapon.Damage / enemyWarrior.armor.ArmorPoints;
+
+			enemyWarrior.health -= damage;
+
+			AttackResult(enemyWarrior, damage);
+		}
+
+		private void AttackResult(Warrior enemyWarrior, int damage)
+		{
+			if (enemyWarrior.health <= 0)
+			{
+				enemyWarrior.isAlive = false;
+
+				Tools.ColorfulAttackWriteLine($"{name} hits {enemyWarrior.name} for {damage} damage! {enemyWarrior.name}'s remaining health: {enemyWarrior.health} ", FACTION);
+
+				Tools.ColorfulWriteLine($"{enemyWarrior.name} has died!", ConsoleColor.Red);
+				Tools.ColorfulWriteLine($"{name} has won!", ConsoleColor.Green);
+			}
+			else
+			{
+
+				Tools.ColorfulAttackWriteLine($"{name} hits {enemyWarrior.name} for {damage} damage! {enemyWarrior.name}'s remaining health: {enemyWarrior.health} ", FACTION);
+			}
+
+			Thread.Sleep(50);
 		}
 	}
 }
